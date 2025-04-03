@@ -89,7 +89,8 @@ class LetterNumberRequestResource extends Resource
                     ->label('File Draft Surat')
                     ->formatStateUsing(fn($state) => basename($state))
                     ->url(fn($record) => asset('storage/' . $record->attachment), true)
-                    ->openUrlInNewTab(),
+                    ->openUrlInNewTab()
+                    ->wrap(),
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
