@@ -28,7 +28,11 @@ class StatsOverview extends BaseWidget
             ];
         } else {
             return [
-                Stat::make('Surat Masuk Anda', IncomingLetter::where('recipient_id', $user->id)->count()),
+                Stat::make('Surat Masuk Anda', IncomingLetter::whereHas(
+                    'recipients',
+                    fn($query) =>
+                    $query->where('users.id', $user->id)
+                )->count()),
                 Stat::make('Pengajuan Surat Anda', LetterNumberRequest::where('user_id', $user->id)->count()),
                 Stat::make('Surat Keluar Anda', OutgoingLetter::where('internal_sender_id', $user->id)->count()),
             ];

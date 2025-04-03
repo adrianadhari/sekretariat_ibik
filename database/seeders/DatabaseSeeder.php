@@ -26,7 +26,6 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Rektor',
                 'email' => 'rektor@email.com',
-                'password' => Hash::make('rektor'),
                 'role' => 'unit_internal'
             ]
         );
@@ -34,7 +33,6 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Wakil Rektor I',
                 'email' => 'warek1@email.com',
-                'password' => Hash::make('warek1'),
                 'role' => 'unit_internal'
             ]
         );
@@ -42,7 +40,6 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Wakil Rektor II',
                 'email' => 'warek2@email.com',
-                'password' => Hash::make('warek2'),
                 'role' => 'unit_internal'
             ]
         );
@@ -50,151 +47,349 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Wakil Rektor III',
                 'email' => 'warek3@email.com',
-                'password' => Hash::make('warek3'),
                 'role' => 'unit_internal'
             ]
         );
         User::create(
             [
-                'name' => 'Unit IT',
-                'email' => 'it@email.com',
-                'password' => Hash::make('it'),
+                'name' => 'Dekan Fakultas Bisnis',
+                'email' => 'dekanbisnis@email.com',
                 'role' => 'unit_internal'
             ]
         );
         User::create(
             [
-                'name' => 'Unit BAUM',
+                'name' => 'Dekan Fakultas Pariwisata & Informatika',
+                'email' => 'dekansitipar@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Dekan Fakultas Vokasi',
+                'email' => 'dekanvokasi@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Dekan Fakultas Magister',
+                'email' => 'dekanmagister@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Ketua Prodi S1 Akuntansi',
+                'email' => 's1akuntansi@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Ketua Prodi S1 Manajemen',
+                'email' => 's1manajemen@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Ketua Prodi S1 Biokewirausahaan',
+                'email' => 's1biokewirausahaan@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Ketua Prodi S1 Teknologi Informasi',
+                'email' => 's1teknologiinformasi@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Ketua Prodi S1 Sistem Informasi',
+                'email' => 's1sisteminformasi@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Ketua Prodi S1 Pariwisata',
+                'email' => 's1pariwisata@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Ketua Prodi Sarjana Terapan Akuntansi Bisnis Digital',
+                'email' => 'akuntansibisdig@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Ketua Prodi Sarjana Terapan Perbankan & Keuangan Digital',
+                'email' => 'pkd@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Ketua Prodi Sarjana Terapan Bisnis Digital',
+                'email' => 'bisdig@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Ketua Prodi S2 Akuntansi',
+                'email' => 's2akuntansi@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Ketua Prodi S2 Manajemen',
+                'email' => 's2manajemen@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'BAUM',
                 'email' => 'baum@email.com',
-                'password' => Hash::make('baum'),
                 'role' => 'unit_internal'
             ]
         );
         User::create(
             [
-                'name' => 'Unit HRD',
+                'name' => 'Manajemen Asset',
+                'email' => 'manajemenasset@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'HRD',
                 'email' => 'hrd@email.com',
-                'password' => Hash::make('hrd'),
                 'role' => 'unit_internal'
             ]
         );
         User::create(
             [
-                'name' => 'Unit Marketing',
+                'name' => 'Marketing',
                 'email' => 'marketing@email.com',
-                'password' => Hash::make('marketing'),
                 'role' => 'unit_internal'
             ]
         );
         User::create(
             [
-                'name' => 'Unit BAAK',
+                'name' => 'IT',
+                'email' => 'it@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'BAAK',
                 'email' => 'baak@email.com',
-                'password' => Hash::make('baak'),
                 'role' => 'unit_internal'
             ]
         );
         User::create(
             [
-                'name' => 'Unit Keuangan',
-                'email' => 'keuangan@email.com',
-                'password' => Hash::make('keuangan'),
-                'role' => 'unit_internal'
-            ]
-        );
-        User::create(
-            [
-                'name' => 'Unit BAPSI',
+                'name' => 'BAPSI',
                 'email' => 'bapsi@email.com',
-                'password' => Hash::make('bapsi'),
                 'role' => 'unit_internal'
             ]
         );
         User::create(
             [
-                'name' => 'Unit LPPM',
+                'name' => 'Keuangan',
+                'email' => 'keuangan@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'LPPM',
                 'email' => 'lppm@email.com',
-                'password' => Hash::make('lppm'),
                 'role' => 'unit_internal'
             ]
         );
         User::create(
             [
-                'name' => 'Unit Perpustakaan',
+                'name' => 'Perpustakaan',
                 'email' => 'perpustakaan@email.com',
-                'password' => Hash::make('perpustakaan'),
                 'role' => 'unit_internal'
             ]
         );
         User::create(
             [
-                'name' => 'Unit CDC',
+                'name' => 'CDC',
                 'email' => 'cdc@email.com',
-                'password' => Hash::make('cdc'),
                 'role' => 'unit_internal'
             ]
         );
         User::create(
             [
-                'name' => 'Unit Pojok BEI',
+                'name' => 'Pojok BEI',
                 'email' => 'pojokbei@email.com',
-                'password' => Hash::make('pojokbei'),
                 'role' => 'unit_internal'
             ]
         );
         User::create(
             [
-                'name' => 'Unit PPM',
+                'name' => 'PPM',
                 'email' => 'ppm@email.com',
-                'password' => Hash::make('ppm'),
                 'role' => 'unit_internal'
             ]
         );
         User::create(
             [
-                'name' => 'Unit PPA',
+                'name' => 'PPA',
                 'email' => 'ppa@email.com',
-                'password' => Hash::make('ppa'),
                 'role' => 'unit_internal'
             ]
         );
         User::create(
             [
-                'name' => 'Unit BPM',
+                'name' => 'BPM',
                 'email' => 'bpm@email.com',
-                'password' => Hash::make('bpm'),
                 'role' => 'unit_internal'
             ]
         );
         User::create(
             [
-                'name' => 'Himpunan Mahasiswa Gabungan',
+                'name' => 'Himpunan Mahasiswa',
                 'email' => 'hima@email.com',
-                'password' => Hash::make('hima'),
                 'role' => 'unit_internal'
             ]
         );
         User::create(
             [
-                'name' => 'Himpunan Mahasiswa Teknologi Informasi',
-                'email' => 'himati@email.com',
-                'password' => Hash::make('himati'),
+                'name' => 'Laboratorium Akuntansi',
+                'email' => 'labakuntansi@email.com',
                 'role' => 'unit_internal'
             ]
         );
         User::create(
             [
-                'name' => 'Himpunan Mahasiswa Sistem Informasi',
-                'email' => 'himasi@email.com',
-                'password' => Hash::make('himasi'),
+                'name' => 'Laboratorium Komputer',
+                'email' => 'labkomputer@email.com',
                 'role' => 'unit_internal'
             ]
         );
         User::create(
             [
-                'name' => 'Unit Laboratorium',
-                'email' => 'laboratorium@email.com',
-                'password' => Hash::make('laboratorium'),
+                'name' => 'Laboratorium Bahasa',
+                'email' => 'labbahasa@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Laboratorium Bank Mini',
+                'email' => 'labbankmini@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'KEC',
+                'email' => 'kec@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Harpas',
+                'email' => 'harpas@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Mapala',
+                'email' => 'mapala@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Marcomm',
+                'email' => 'marcomm@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Hipmi',
+                'email' => 'hipmi@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'KAC',
+                'email' => 'kac@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'CMC',
+                'email' => 'cmc@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'KBMKK',
+                'email' => 'kbmkk@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Futsal',
+                'email' => 'futsal@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Formi',
+                'email' => 'formi@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'KCM',
+                'email' => 'kcm@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'KMBK',
+                'email' => 'kmbk@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'KMKK',
+                'email' => 'kmkk@email.com',
+                'role' => 'unit_internal'
+            ]
+        );
+        User::create(
+            [
+                'name' => 'Esport',
+                'email' => 'esport@email.com',
                 'role' => 'unit_internal'
             ]
         );

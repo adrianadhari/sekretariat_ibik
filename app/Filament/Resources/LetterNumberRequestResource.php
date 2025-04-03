@@ -35,6 +35,13 @@ class LetterNumberRequestResource extends Resource
     protected static ?string $label = 'Pengajuan Nomor Surat';
     protected static ?string $pluralLabel = 'Pengajuan Nomor Surat';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('status', 'Pending')->count();
+    }
+
+    protected static ?string $navigationBadgeTooltip = 'Pengajuan Nomor Surat yang Pending';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -47,6 +54,7 @@ class LetterNumberRequestResource extends Resource
                             ->label('File Draft Surat')
                             ->directory('draft')
                             ->required()
+                            ->getUploadedFileNameForStorageUsing(fn($file) => now()->timestamp . '-' . $file->getClientOriginalName())
                             ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
                             ->maxSize(5120)
                             ->columnSpanFull()
@@ -59,10 +67,7 @@ class LetterNumberRequestResource extends Resource
                             ])
                             ->columnSpanFull()
                             ->default('Pending')
-                            ->disabled(fn() => !auth()->user()->isSekretariat()),
-                        TextInput::make('remarks')
-                            ->label('Keterangan')
-                            ->columnSpanFull()
+                            ->visible(fn() => auth()->user()->isSekretariat()),
                     ])
             ]);
     }
@@ -77,14 +82,12 @@ class LetterNumberRequestResource extends Resource
             ->columns([
                 TextColumn::make('user.name')
                     ->label('Pemohon'),
-                TextColumn::make('remarks')
-                    ->wrap()
-                    ->label('Keterangan'),
                 TextColumn::make('created_at')
                     ->label('Tanggal Pengajuan')
                     ->dateTime('d M Y, H:i'),
                 TextColumn::make('attachment')
                     ->label('File Draft Surat')
+                    ->formatStateUsing(fn($state) => basename($state))
                     ->url(fn($record) => asset('storage/' . $record->attachment), true)
                     ->openUrlInNewTab(),
                 TextColumn::make('status')
@@ -94,8 +97,13 @@ class LetterNumberRequestResource extends Resource
                         'Disetujui' => 'success',
                         'Ditolak' => 'danger'
                     })
-                    ->label('Status Pengajuan')
+                    ->label('Status Pengajuan'),
+                TextColumn::make('remarks')
+                    ->wrap()
+                    ->label('No. Surat')
+                    ->placeholder('Belum diberikan'),
             ])
+            ->defaultSort('status', 'Pending')
             ->filters([
                 //
             ])
@@ -105,13 +113,22 @@ class LetterNumberRequestResource extends Resource
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->visible(fn(Model $record) => auth()->user()->isSekretariat() && $record->status === 'Pending')
-                    ->action(function (Model $record) {
-                        $record->update(['status' => 'Disetujui']);
+                    ->requiresConfirmation()
+                    ->form([
+                        Textarea::make('remarks')
+                            ->label('No. Surat')
+                            ->required(),
+                    ])
+                    ->action(function (Model $record, array $data) {
+                        $record->update([
+                            'status' => 'Disetujui',
+                            'remarks' => $data['remarks'],
+                        ]);
 
                         Notification::make()
-                            ->title('Pengajuan Disetujui')
+                            ->title('No. Surat Diberikan')
                             ->success()
-                            ->body('Pengajuan nomor surat #' . $record->id . ' telah disetujui.')
+                            ->body('Pengajuan nomor surat telah selesai.')
                             ->send();
                     }),
 

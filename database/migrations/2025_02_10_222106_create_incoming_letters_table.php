@@ -21,13 +21,18 @@ return new class extends Migration
             $table->foreignId('internal_sender_id')->nullable()->constrained('users');
             $table->foreignId('external_sender_id')->nullable()->constrained('externals');
 
-            $table->foreignId('recipient_id')->constrained('users');
+            $table->enum('status', ['Menunggu Persetujuan', 'Tidak Disetujui', 'Selesai dan Terdistribusi'])->default('Menunggu Persetujuan');
 
             $table->string('subject');  
             $table->date('received_date');
             $table->time('received_time');
             $table->string('recipient');
+
+            $table->enum('classification_letter', ['Akademik', 'Keuangan', 'Kemahasiswaan', 'Umum']);
+            $table->enum('category_letter', ['Rahasia', 'Segera', 'Penting', 'Biasa']);
+
             $table->string('attachment')->nullable();
+            $table->text('resume')->nullable();
             $table->timestamps();
         });
     }

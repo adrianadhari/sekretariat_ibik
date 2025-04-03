@@ -13,12 +13,14 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -34,6 +36,8 @@ class IncomingLetterResource extends Resource
     protected static ?string $label = 'Surat Masuk';
     protected static ?string $pluralLabel = 'Surat Masuk';
 
+
+
     public static function form(Form $form): Form
     {
         return $form
@@ -42,6 +46,8 @@ class IncomingLetterResource extends Resource
                     ->schema([
                         TextInput::make('agenda_number')
                             ->required()
+                            ->readOnly()
+                            ->default(fn() => str_pad(IncomingLetter::max('id') + 1, 5, '0', STR_PAD_LEFT))
                             ->unique(ignoreRecord: true)
                             ->label('Nomor Agenda'),
                         TextInput::make('letter_number')
@@ -68,11 +74,13 @@ class IncomingLetterResource extends Resource
                             ->options(External::pluck('name', 'id'))
                             ->searchable()
                             ->hidden(fn($get) => $get('sender_type') !== 'External'),
-                        Select::make('recipient_id')
+                        Select::make('recipients')
+                            ->multiple()
                             ->label('Ditujukan Kepada')
-                            ->options(User::pluck('name', 'id'))
+                            ->relationship('recipients', 'name')
                             ->searchable()
-                            ->required(),
+                            ->required()
+                            ->preload(),
                         TextInput::make('subject')
                             ->required()
                             ->label('Perihal'),
@@ -87,12 +95,42 @@ class IncomingLetterResource extends Resource
                                 ->required()
                                 ->label('Penerima'),
                         ])->columns(3),
+                        Select::make('status')
+                            ->label('Status')
+                            ->options([
+                                'Menunggu Persetujuan' => 'Menunggu Persetujuan',
+                                'Tidak Disetujui' => 'Tidak Disetujui',
+                                'Selesai dan Terdistribusi' => 'Selesai dan Terdistribusi',
+                            ])
+                            ->default('Menunggu Persetujuan'),
+                        Select::make('classification_letter')
+                            ->label('Klasifikasi Surat')
+                            ->options([
+                                'Akademik' => 'Akademik',
+                                'Keuangan' => 'Keuangan',
+                                'Kemahasiswaan' => 'Kemahasiswaan',
+                                'Umum' => 'Umum',
+                            ])
+                            ->required(),
+                        Select::make('category_letter')
+                            ->label('Sifat Surat')
+                            ->options([
+                                'Rahasia' => 'Rahasia',
+                                'Segera' => 'Segera',
+                                'Penting' => 'Penting',
+                                'Biasa' => 'Biasa',
+                            ])
+                            ->required(),
                         FileUpload::make('attachment')
                             ->directory('surat_masuk')
+                            ->getUploadedFileNameForStorageUsing(fn($file) => now()->timestamp . '-' . $file->getClientOriginalName())
                             ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
                             ->maxSize(5120)
                             ->label('File Arsip')
                             ->helperText('Tipe file pdf dan docx dengan ukuran maksimal 5 MB.'),
+                        Textarea::make('resume')
+                            ->label('Resume Disposisi')
+                            ->autosize()
                     ])->columns(2)
             ]);
     }
@@ -104,15 +142,17 @@ class IncomingLetterResource extends Resource
                 fn($query) =>
                 auth()->user()->isSekretariat()
                     ? $query
-                    : $query->where('recipient_id', auth()->id())
+                    : $query->whereHas('recipients', fn($q) => $q->where('users.id', auth()->id()))
+
             )
             ->columns([
                 TextColumn::make('agenda_number')
-                    ->label('Nomor Agenda')
+                    ->label('No. Agenda')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->wrap(),
                 TextColumn::make('letter_number')
-                    ->label('Nomor Surat')
+                    ->label('No. Surat')
                     ->searchable(),
                 TextColumn::make('letter_date')
                     ->label('Tanggal Surat')
@@ -126,13 +166,35 @@ class IncomingLetterResource extends Resource
                     ->searchable()
                     ->wrap(),
                 TextColumn::make('attachment')
-                    ->label('File Surat')
-                    ->url(fn($record) => asset('storage/' . $record->attachment), true)
-                    ->openUrlInNewTab()
+                    ->label('File Arsip Surat')
+                    ->formatStateUsing(fn($state) => $state ? basename($state) : '-')
+                    ->url(fn($record) => $record->attachment ? asset('storage/' . $record->attachment) : null, true)
+                    ->openUrlInNewTab(fn($record) => (bool) $record->attachment)
+                    ->placeholder('Belum Diupload')
+                    ->wrap(),
+                TextColumn::make('lembar_disposisi')
+                    ->label('Lembar Disposisi')
+                    ->getStateUsing(fn($record) => "Lembar Disposisi - {$record->agenda_number}")
+                    ->url(fn($record) => asset("storage/lembar_disposisi_{$record->agenda_number}.xlsx"), true)
+                    ->openUrlInNewTab(fn($record) => file_exists(storage_path("app/public/lembar_disposisi_{$record->agenda_number}.xlsx")))
+                    ->placeholder('Belum Digenerate')
+                    ->wrap(),
+                TextColumn::make('status')
+                    ->badge()
+                    ->colors([
+                        'warning' => 'Menunggu Persetujuan',
+                        'danger' => 'Tidak Disetujui',
+                        'success' => 'Selesai dan Terdistribusi',
+                    ])
             ])
             ->defaultSort('agenda_number', 'desc')
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->options([
+                        'Menunggu Persetujuan' => 'Menunggu Persetujuan',
+                        'Tidak Disetujui' => 'Tidak Disetujui',
+                        'Selesai dan Terdistribusi' => 'Selesai dan Terdistribusi',
+                    ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->visible(fn() => auth()->user()->isSekretariat()),
@@ -143,7 +205,7 @@ class IncomingLetterResource extends Resource
                 ]),
             ])
             ->recordUrl(fn($record) => auth()->user()->isSekretariat()
-                ? route('filament.admin.resources.outgoing-letters.edit', $record)
+                ? route('filament.admin.resources.incoming-letters.edit', $record)
                 : null);
     }
 

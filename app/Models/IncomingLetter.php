@@ -19,9 +19,9 @@ class IncomingLetter extends Model
     }
 
     // Relasi ke penerima surat (Unit Internal atau Sekretariat)
-    public function recipient()
+    public function recipients()
     {
-        return $this->belongsTo(User::class, 'recipient_id');
+        return $this->belongsToMany(User::class, 'incoming_letter_recipient', 'incoming_letter_id', 'recipient_id');
     }
 
     public function getSenderNameAttribute()

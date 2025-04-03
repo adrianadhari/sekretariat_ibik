@@ -55,10 +55,12 @@ class ExternalResource extends Resource
             ->columns([
                 TextColumn::make('name')
                     ->label('Nama')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('institution')
                     ->label('Institusi')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('contact_info')
                     ->label('Kontak')
                     ->searchable(),

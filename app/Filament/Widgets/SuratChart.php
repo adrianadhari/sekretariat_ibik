@@ -38,8 +38,11 @@ class SuratChart extends ChartWidget
                     ->count();
             } else {
                 // Unit Internal hanya melihat surat mereka
-                $suratMasuk = IncomingLetter::where('recipient_id', $user->id)
-                    ->whereMonth('created_at', $month->month)
+                $suratMasuk = IncomingLetter::whereHas(
+                    'recipients',
+                    fn($query) =>
+                    $query->where('users.id', $user->id)
+                )->whereMonth('created_at', $month->month)
                     ->whereYear('created_at', $month->year)
                     ->count();
 

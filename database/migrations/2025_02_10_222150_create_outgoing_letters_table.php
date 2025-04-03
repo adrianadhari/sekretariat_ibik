@@ -16,8 +16,6 @@ return new class extends Migration
             $table->string('letter_number')->unique();
             $table->date('letter_date');
             $table->string('subject');
-            $table->string('attachment')->nullable();
-            $table->enum('status', ['Menunggu Persetujuan', 'Tidak Disetujui', 'Disetujui', 'Terdistribusi'])->default('Menunggu Persetujuan');
             
             $table->enum('sender_type', ['Internal', 'External']);
             $table->foreignId('external_sender_id')->nullable()->constrained('externals');

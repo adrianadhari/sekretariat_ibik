@@ -51,30 +51,27 @@ class OutgoingLetterResource extends Resource
                         TextInput::make('subject')
                             ->required()
                             ->label('Perihal'),
-                        FileUpload::make('attachment')
-                            ->directory('surat_keluar')
-                            ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
-                            ->maxSize(5120)
-                            ->label('File Surat')
-                            ->helperText('Tipe file pdf dan docx dengan ukuran maksimal 5 MB.'),
                         Select::make('sender_type')
                             ->label('Jenis Pengirim')
                             ->options([
                                 'Internal' => 'Internal',
                                 'External' => 'External',
                             ])
+                            ->required()
                             ->reactive(),
 
                         Select::make('internal_sender_id')
                             ->label('Pengirim Internal')
                             ->options(User::pluck('name', 'id'))
                             ->searchable()
+                            ->required()
                             ->hidden(fn($get) => $get('sender_type') !== 'Internal'),
 
                         Select::make('external_sender_id')
                             ->label('Pengirim Eksternal')
                             ->options(External::pluck('name', 'id'))
                             ->searchable()
+                            ->required()
                             ->hidden(fn($get) => $get('sender_type') !== 'External'),
 
                         Select::make('recipient_type')
@@ -83,29 +80,22 @@ class OutgoingLetterResource extends Resource
                                 'Internal' => 'Internal',
                                 'External' => 'External',
                             ])
+                            ->required()
                             ->reactive(),
 
                         Select::make('internal_recipient_id')
                             ->label('Penerima Internal')
                             ->options(User::pluck('name', 'id'))
                             ->searchable()
+                            ->required()
                             ->hidden(fn($get) => $get('recipient_type') !== 'Internal'),
 
                         Select::make('external_recipient_id')
                             ->label('Penerima Eksternal')
+                            ->required()
                             ->options(External::pluck('name', 'id'))
                             ->searchable()
                             ->hidden(fn($get) => $get('recipient_type') !== 'External'),
-
-                        Select::make('status')
-                            ->label('Status')
-                            ->options([
-                                'Menunggu Persetujuan' => 'Menunggu Persetujuan',
-                                'Disetujui' => 'Disetujui',
-                                'Tidak Disetujui' => 'Tidak Disetujui',
-                                'Terdistribusi' => 'Terdistribusi',
-                            ])
-                            ->default('Menunggu Persetujuan')
                     ])
             ]);
     }
@@ -135,37 +125,11 @@ class OutgoingLetterResource extends Resource
                     ->formatStateUsing(fn($record) => $record->sender_type === 'Internal'
                         ? $record->internalSender->name
                         : $record->externalSender->name),
-
-                TextColumn::make('recipient_type')
-                    ->label('Penerima')
-                    ->formatStateUsing(fn($record) => $record->recipient_type === 'Internal'
-                        ? $record->internalRecipient->name
-                        : $record->externalRecipient->name),
-
-                TextColumn::make('attachment')
-                    ->label('File Surat')
-                    ->url(fn($record) => asset('storage/' . $record->attachment), true)
-                    ->openUrlInNewTab(),
-
-                TextColumn::make('status')
-                    ->badge()
-                    ->colors([
-                        'warning' => 'Menunggu Persetujuan',
-                        'info' => 'Disetujui',
-                        'danger' => 'Tidak Disetujui',
-                        'success' => 'Terdistribusi',
-                    ]),
+                TextColumn::make('subject')
+                    ->label('Perihal'),
             ])
-            ->defaultSort('created_at', 'desc')
-            ->filters([
-                SelectFilter::make('status')
-                    ->options([
-                        'Menunggu Persetujuan' => 'Menunggu Persetujuan',
-                        'Disetujui' => 'Disetujui',
-                        'Tidak Disetujui' => 'Tidak Disetujui',
-                        'Terdistribusi' => 'Terdistribusi',
-                    ]),
-            ])
+            ->defaultSort('letter_date', 'desc')
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make()->visible(fn() => auth()->user()->isSekretariat()),
             ])
